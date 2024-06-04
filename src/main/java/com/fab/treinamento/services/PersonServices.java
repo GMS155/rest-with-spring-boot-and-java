@@ -1,8 +1,10 @@
 package com.fab.treinamento.services;
 
-import com.fab.treinamento.PersonRepository;
 import com.fab.treinamento.exceptions.ResourceNotFoundException;
 import com.fab.treinamento.model.Person;
+import com.fab.treinamento.modelV2.PersonV2;
+import com.fab.treinamento.repository.PersonRepository;
+import com.fab.treinamento.repositoryV2.repository.PersonRepositoryV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +14,13 @@ import java.util.logging.Logger;
 @Service
 public class PersonServices {
 
-    private Logger logger = Logger.getLogger(PersonServices.class.getName());
+    @Autowired
+    PersonRepositoryV2 repositoryV2;
 
     @Autowired
     PersonRepository repository;
+
+    private Logger logger = Logger.getLogger(PersonServices.class.getName());
 
     public List<Person> findAll() {
 
@@ -59,5 +64,10 @@ public class PersonServices {
         repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
         repository.deleteById(id);
+    }
+
+    public PersonV2 createV2(PersonV2 person) {
+        logger.info("Creating one person with V2!");
+        return repositoryV2.save(person);
     }
 }

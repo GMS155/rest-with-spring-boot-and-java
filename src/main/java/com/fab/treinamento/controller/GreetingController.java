@@ -1,6 +1,7 @@
 package com.fab.treinamento.controller;
 
 import com.fab.treinamento.model.Person;
+import com.fab.treinamento.modelV2.PersonV2;
 import com.fab.treinamento.services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,10 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("api/person/v1")
 public class GreetingController {
 
     @Autowired
@@ -39,6 +39,13 @@ public class GreetingController {
     public Person create(@RequestBody Person person) {
 
         return service.create(person);
+    }
+
+    @PostMapping(value = "/v2", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public PersonV2 createV2(@RequestBody PersonV2 person) {
+
+        return service.createV2(person);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,

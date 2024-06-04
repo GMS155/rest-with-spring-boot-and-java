@@ -1,4 +1,4 @@
-package com.fab.treinamento;
+package com.fab.treinamento.repository;
 
 import com.fab.treinamento.model.Person;
 import org.springframework.data.jpa.repository.JpaRepository;

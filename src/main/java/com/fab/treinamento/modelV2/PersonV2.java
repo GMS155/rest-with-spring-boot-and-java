@@ -1,17 +1,14 @@
-package com.fab.treinamento.model;
+package com.fab.treinamento.modelV2;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name = "person")
-@JsonPropertyOrder({"id","address","firstName","last_name","gender"})
-public class Person implements Serializable {
+public class PersonV2 implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,15 +17,23 @@ public class Person implements Serializable {
     @Column(name = "first_name", nullable = false)
     private String firstName;
     @Column(name = "last_name", nullable = false)
-    @JsonProperty("last_name")
     private String lastName;
     @Column
     private String address;
     @Column
-    //@JsonIgnore
     private String gender;
+    @Column
+    private Date birthday;
 
-    public Person() {
+    public PersonV2() {
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
 
     public Long getId() {
@@ -74,7 +79,7 @@ public class Person implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Person person)) return false;
+        if (!(o instanceof PersonV2 person)) return false;
         return id == person.id && firstName.equals(person.firstName) && lastName.equals(person.lastName) && address.equals(person.address) && gender.equals(person.gender);
     }
 
