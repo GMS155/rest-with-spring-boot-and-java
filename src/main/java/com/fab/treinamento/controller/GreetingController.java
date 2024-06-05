@@ -3,7 +3,11 @@ package com.fab.treinamento.controller;
 import com.fab.treinamento.model.Person;
 import com.fab.treinamento.modelV2.PersonV2;
 import com.fab.treinamento.services.PersonServices;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +20,7 @@ public class GreetingController {
 
     @Autowired
     private PersonServices service;
+
     private static final String template = "Hello, %s!";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -25,31 +30,35 @@ public class GreetingController {
     }
 
     @GetMapping(value = "/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public Person findById(@PathVariable(value = "id") Long id) throws Exception {
 
         if (isNumeric(id)) {
             throw new UnsupportedOperationException("Digite um número");
         }
-        return service.findById(id);
+
+        Link selfLink = WebMvcLinkBuilder.linkTo(GreetingController.class).slash("person").withSelfRel();
+        //person1.add(selfLink);
+
+        return service.findById(id).add(selfLink);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public Person create(@RequestBody Person person) {
 
         return service.create(person);
     }
 
-    @PostMapping(value = "/v2", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v2", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public PersonV2 createV2(@RequestBody PersonV2 person) {
 
         return service.createV2(person);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public Person update(@RequestBody Person person) {
 
         return service.update(person);

@@ -1,17 +1,17 @@
 package com.fab.treinamento.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "person")
-@JsonPropertyOrder({"id","address","firstName","last_name","gender"})
-public class Person implements Serializable {
+@JsonPropertyOrder({"id", "address", "firstName", "last_name", "gender"})
+public class Person extends RepresentationModel<Person> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

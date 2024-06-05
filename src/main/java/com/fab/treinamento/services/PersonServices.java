@@ -29,12 +29,12 @@ public class PersonServices {
 
     public Person findById(Long id) {
 
-        logger.info("finding one person!");
-        Person person = new Person();
-        person.setAddress("Rua Cedro");
-        person.setFirstName("Guilherme");
-        person.setLastName("Santos");
-        person.setGender("Male");
+//        logger.info("finding one person!");
+//        Person person = new Person();
+//        person.setAddress("Rua Cedro");
+//        person.setFirstName("Guilherme");
+//        person.setLastName("Santos");
+//        person.setGender("Male");
 
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
