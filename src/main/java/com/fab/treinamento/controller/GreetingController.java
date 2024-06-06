@@ -3,8 +3,13 @@ package com.fab.treinamento.controller;
 import com.fab.treinamento.model.Person;
 import com.fab.treinamento.modelV2.PersonV2;
 import com.fab.treinamento.services.PersonServices;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -16,24 +21,31 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/person/v1")
+@Tag(name = "API Person", description = "teste")
 public class GreetingController {
 
     @Autowired
     private PersonServices service;
 
-    private static final String template = "Hello, %s!";
-
+    @ApiResponse(responseCode = "200", description = "Lista de usuários recuperada com sucesso",
+            content =
+            @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = Person.class)))
+    )
+    @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado", content = @Content)
+    @Operation(summary = "Obter todos os usuários", description = "Obtém uma lista de todos os usuários cadastrados no sistema")
+    //@ApiOperation(value="Endpoint buscar pessoas")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Person> findAll() throws Exception {
 
         return service.findAll();
     }
 
-    @GetMapping(value = "/{id}",
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public Person findById(@PathVariable(value = "id") Long id) throws Exception {
+    @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public Person findById(@Parameter(description = "ID do usuário", required = true) @PathVariable(value = "id") Long id) throws Exception {
 
-        if (isNumeric(id)) {
+        if (service.isNumeric(id)) {
             throw new UnsupportedOperationException("Digite um número");
         }
 
@@ -64,37 +76,14 @@ public class GreetingController {
         return service.update(person);
     }
 
-    private boolean isNumeric(Long strNumber) {
-        var id = String.valueOf(strNumber);
-        if (id == null) {
-            return true;
-        }
-        return !id.matches("[-+]?[0-9]");
-    }
-
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) throws Exception {
 
-        if (isNumeric(id)) {
+        if (service.isNumeric(id)) {
             throw new UnsupportedOperationException("Digite um número");
         }
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-    //      } else {
-    //           String number = strNumber.replaceAll(",", ".");
-//            return number.matches("[-+]?[0-9]*\\.?[0-9]+");
-//        }
-//    }
-//    @RequestMapping("/greeting")
-//    public Greeting greeting(@RequestParam(value = "name", defaultValue = "Word") String name) {
-//
-//        return new Greeting(counter.incrementAndGet(), String.format(template, name));
-//    }
-
-    //    private Double convertToDouble(String strNumber) {
-//        String number = strNumber.replaceAll(",", ".");
-//        return Double.parseDouble(number);
-//    }
+    
 }

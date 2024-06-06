@@ -70,4 +70,12 @@ public class PersonServices {
         logger.info("Creating one person with V2!");
         return repositoryV2.save(person);
     }
+
+    public boolean isNumeric(Long strNumber) {
+        var id = String.valueOf(strNumber);
+        if (id == null) {
+            return true;
+        }
+        return !id.matches("[-+]?[0-9]");
+    }
 }
