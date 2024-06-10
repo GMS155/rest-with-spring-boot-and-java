@@ -42,6 +42,7 @@ public class GreetingController {
         return service.findAll();
     }
 
+   // @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public Person findById(@Parameter(description = "ID do usuário", required = true) @PathVariable(value = "id") Long id) throws Exception {
 
