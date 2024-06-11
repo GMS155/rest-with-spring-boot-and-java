@@ -1,9 +1,4 @@
 ##spring.application.name=rest-with-spring-boot-and-java
-security:
-  jwt:
-    token:
-      secret-key: 53ccr37
-      expire-length: 3600000
 spring:
   datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver

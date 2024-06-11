@@ -1,7 +1,6 @@
 package com.fab.treinamento.modelV2;
 
 import jakarta.persistence.*;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Date;
