@@ -6,6 +6,8 @@ import com.fab.treinamento.modelV2.PersonV2;
 import com.fab.treinamento.repository.PersonRepository;
 import com.fab.treinamento.repositoryV2.repository.PersonRepositoryV2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +24,9 @@ public class PersonServices {
 
     private Logger logger = Logger.getLogger(PersonServices.class.getName());
 
-    public List<Person> findAll() {
+    public Page<Person> findAll(Pageable pageable) {
 
-        return repository.findAll();
+        return repository.findAll(pageable);
     }
 
     public Person findById(Long id) {

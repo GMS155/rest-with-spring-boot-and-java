@@ -11,12 +11,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -37,12 +41,15 @@ public class GreetingController {
     @Operation(summary = "Obter todos os usuários", description = "Obtém uma lista de todos os usuários cadastrados no sistema")
     //@ApiOperation(value="Endpoint buscar pessoas")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Person> findAll() throws Exception {
-
-        return service.findAll();
+    public Page<Person> findAll(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", defaultValue = "12") Integer limit
+    ) throws Exception {
+        Pageable pageable = PageRequest.of(page, limit);
+        return service.findAll(pageable);
     }
 
-   // @CrossOrigin(origins = "http://localhost:8080")
+    // @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public Person findById(@Parameter(description = "ID do usuário", required = true) @PathVariable(value = "id") Long id) throws Exception {
 
@@ -86,5 +93,5 @@ public class GreetingController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
-    
+
 }
