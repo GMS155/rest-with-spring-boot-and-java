@@ -3,6 +3,7 @@ package com.fab.treinamento.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
@@ -29,6 +30,32 @@ public class Person extends RepresentationModel<Person> implements Serializable 
     private String gender;
 
     public Person() {
+    }
+
+    public Person(Link initialLink, Long id, String firstName, String lastName, String address, String gender) {
+        super(initialLink);
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.gender = gender;
+    }
+
+    public Person(Iterable<Link> initialLinks, Long id, String firstName, String lastName, String address, String gender) {
+        super(initialLinks);
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.gender = gender;
+    }
+
+    public Person(Long id, String firstName, String lastName, String address, String gender) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.gender = gender;
     }
 
     public Long getId() {

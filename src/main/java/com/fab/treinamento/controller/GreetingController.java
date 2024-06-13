@@ -2,6 +2,7 @@ package com.fab.treinamento.controller;
 
 import com.fab.treinamento.model.Person;
 import com.fab.treinamento.modelV2.PersonV2;
+import com.fab.treinamento.response.PagedResponse;
 import com.fab.treinamento.services.PersonServices;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/person/v1")
@@ -37,17 +39,45 @@ public class GreetingController {
                     mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = Person.class)))
     )
+//    @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado", content = @Content)
+//    @Operation(summary = "Obter todos os usuários", description = "Obtém uma lista de todos os usuários cadastrados no sistema")
+//    //@ApiOperation(value="Endpoint buscar pessoas")
+//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+//    public Page<Person> findAll(
+//            @RequestParam(value = "page", defaultValue = "0") Integer page,
+//            @RequestParam(value = "limit", defaultValue = "12") Integer limit
+//    ) throws Exception {
+//        Pageable pageable = PageRequest.of(page, limit);
+//        return service.findAll(pageable);
+//    }
+
+
     @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado", content = @Content)
     @Operation(summary = "Obter todos os usuários", description = "Obtém uma lista de todos os usuários cadastrados no sistema")
     //@ApiOperation(value="Endpoint buscar pessoas")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<Person> findAll(
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "limit", defaultValue = "12") Integer limit
-    ) throws Exception {
-        Pageable pageable = PageRequest.of(page, limit);
-        return service.findAll(pageable);
+    public PagedResponse<Person> findAll(Pageable pageable) {
+
+        Page<Person> userPage = service.findAll(pageable);
+
+        List<Person> listUser = userPage.stream()
+                .map(user -> new Person(user.getId(),
+                        user.getAddress(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getGender()))
+                .toList();
+
+        PagedResponse<Person> response = new PagedResponse<>(
+                listUser,
+                userPage.getNumber(),
+                userPage.getTotalElements(),
+                userPage.getSize(),
+                userPage.getTotalPages()
+        );
+        return response;
     }
+
 
     // @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
