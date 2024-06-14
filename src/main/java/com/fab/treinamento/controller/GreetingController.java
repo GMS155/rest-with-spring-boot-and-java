@@ -15,15 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/person/v1")
@@ -32,6 +31,8 @@ public class GreetingController {
 
     @Autowired
     private PersonServices service;
+
+    static Pageable pageable;
 
     @ApiResponse(responseCode = "200", description = "Lista de usuários recuperada com sucesso",
             content =
@@ -56,25 +57,32 @@ public class GreetingController {
     @Operation(summary = "Obter todos os usuários", description = "Obtém uma lista de todos os usuários cadastrados no sistema")
     //@ApiOperation(value="Endpoint buscar pessoas")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedResponse<Person> findAll(Pageable pageable) {
+    public PagedResponse<Person> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                         @RequestParam(value = "size", defaultValue = "12") Integer size
+    ) {
+
+        //var sofDirection = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        //pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "lastName"));
+        pageable = PageRequest.of(page, size, Sort.by("lastName").descending());
 
         Page<Person> userPage = service.findAll(pageable);
 
-        List<Person> listUser = userPage.stream()
-                .map(user -> new Person(user.getId(),
-                        user.getAddress(),
-                        user.getFirstName(),
-                        user.getLastName(),
-                        user.getGender()))
-                .toList();
+//        List<Person> listUser = userPage.stream()
+//                .map(user -> new Person(user.getId(),
+//                        user.getAddress(),
+//                        user.getFirstName(),
+//                        user.getLastName(),
+//                        user.getGender()))
+//                .toList();
 
         PagedResponse<Person> response = new PagedResponse<>(
-                listUser,
-                userPage.getNumber(),
+                userPage.stream().toList(),
+                userPage.getTotalPages(),
                 userPage.getTotalElements(),
                 userPage.getSize(),
-                userPage.getTotalPages()
+                userPage.getNumber()
         );
+
         return response;
     }
 
